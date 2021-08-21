@@ -1,0 +1,5 @@
+casa
+caso
+sala
+sello
+cielo
