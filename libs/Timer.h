@@ -1,5 +1,8 @@
 #include <chrono>
 
+#ifndef TIMER_H
+#define TIMER_H
+
 template <class TimeT = std::chrono::milliseconds,
           class ClockT = std::chrono::steady_clock>
 class Timer
@@ -21,3 +24,5 @@ public:
         return std::chrono::duration_cast<TT>(_end - _start).count(); 
     }
 };
+
+#endif // TIMER_H

@@ -20,7 +20,7 @@ std::ostream &operator<<(std::ostream &os, const wordMap &map);
 //verbose
 std::ostream &operator<<(std::ostream &os, const std::unique_ptr<wordMap> &map);
 
-int main(int argc, char *argv[])
+int main()
 {
   std::cout << "Loading dictionary\n";
 

@@ -2,8 +2,8 @@
 #include <utility>
 #include <string>
 
-#ifndef _IWORDMAP
-#define _IWORDMAP
+#ifndef IWORDMAP_H
+#define IWORDMAP_H
 
 template<typename T = std::unordered_multimap<int, std::string>::iterator>
 class IWordMap {
@@ -14,4 +14,4 @@ class IWordMap {
     std::pair<T, T> equal_range(int length);
 };
 
-#endif
+#endif // IWORDMAP_H
