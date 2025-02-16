@@ -1,27 +1,28 @@
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <memory>
-#include "libs/Timer.h"
-#include "libs/WordMap.h"
+#include <vector>
+#include "Timer.h"
+#include "Game.h"
 
 Timer timer;
 
 int main()
 {
-  std::cout << "Loading dictionary...\n";
+  std::cout << "Loading lexicon...\n";
 
   timer.start();
-  std::unique_ptr<WordMap> map = loadDictrionary("words_alpha_xs.txt");
+  std::vector<std::string> lexicon = loadLexicon("../lexicons/words_alpha_xs.txt");
   timer.end();
 
-  if (!map)
+  if (lexicon.empty())
   {
     return EXIT_FAILURE;
   }
 
-  std::cout << "Dictionary loaded (took " << timer.duration() << "ms)\n";
+  std::cout << "Lexicon loaded (took " << timer.duration() << "ms)\n";
 
-  std::cout << "Dictionary size: " << map->size() << '\n';
+  std::cout << "Lexicon size: " << lexicon.size() << '\n';
 
   // timer.start();
   // print(*map);
