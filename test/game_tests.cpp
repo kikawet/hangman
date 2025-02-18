@@ -11,7 +11,7 @@ CTEST(Game, constructor)
 {
     Game g(lexicon);
 
-    ASSERT_EQUAL(0, g.get_total_guess());
+    ASSERT_EQUAL(0, g.get_failed_count());
     ASSERT_TRUE(g.guesses().empty());
 }
 
@@ -38,7 +38,7 @@ CTEST(Game, guess)
 
     g.guess(ALPHABET[0]);
 
-    ASSERT_EQUAL(1, g.get_total_guess());
+    ASSERT_EQUAL(1, g.get_failed_count());
     ASSERT_STR(C_STR(ALPHABET[0]), C_STR(g.guesses()[0]));
 }
 
@@ -50,7 +50,7 @@ CTEST(Game, guessed)
 
     ASSERT_EQUAL(solution.size(), g.guessed().size());
 
-    ASSERT_TRUE(g.guess(solution[0]));
+    ASSERT_FALSE(g.guess(solution[0]));
 
     ASSERT_STR(C_STR(solution[0]), C_STR(g.guessed()[0]));
 
@@ -69,9 +69,32 @@ CTEST(Game, repeated_guessed)
     ASSERT_EQUAL(solution.size(), g.guessed().size());
     ASSERT_STR("......", g.guessed('.').c_str());
 
-    ASSERT_TRUE(g.guess('T'));
+    ASSERT_FALSE(g.guess('T'));
 
     ASSERT_STR("..TT..", g.guessed('.').c_str());
+
+    ASSERT_FALSE(g.guess('T'));
+
+    ASSERT_STR("..TT..", g.guessed('.').c_str());
+}
+
+CTEST(Game, solve)
+{
+    std::string solution = "HOTTOH";
+    std::vector test_dict{solution};
+    Game g(test_dict);
+
+    ASSERT_EQUAL(solution.size(), g.guessed().size());
+    ASSERT_STR("......", g.guessed('.').c_str());
+
+    ASSERT_FALSE(g.guess('T'));
+    ASSERT_STR("..TT..", g.guessed('.').c_str());
+
+    ASSERT_FALSE(g.guess('O'));
+    ASSERT_STR(".OTTO.", g.guessed('.').c_str());
+
+    ASSERT_TRUE(g.guess('H'));
+    ASSERT_STR("HOTTOH", g.guessed('.').c_str());
 }
 
 CTEST(Game, validate_all_dicts)

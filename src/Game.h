@@ -19,12 +19,14 @@ public:
     ~Game();
 
     bool guess(char c);
-    int get_total_guess();
+    std::size_t get_failed_count();
     std::vector<char> guesses();
     std::string guessed(char unkown = '_');
+    std::string_view give_up();
 
 private:
-    int total_guess;
+    std::size_t failed_count;
+    std::size_t success_count;
     bool *alphabet_guessed;
     std::string alphabet;
     std::string solution;
@@ -33,5 +35,63 @@ private:
 
 std::vector<std::string> loadLexicon(std::string lexiconPath);
 bool validate_word(const std::string &word, const std::string &alphabet, std::size_t *err_pos);
+
+constexpr const std::string_view hangman_visuals [] = {
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "       │  \n"
+    "       │  \n"
+    "       │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "       │  \n"
+    "       │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "   │   │  \n"
+    "       │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "  🯑│   │  \n"
+    "       │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "  🯑│🯒  │  \n"
+    "       │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "  🯑│🯒  │  \n"
+    "  🯑    │  \n"
+    "       │  \n"
+    " ══════╧══\n",
+
+    "   ╭───╮  \n"
+    "   │   │  \n"
+    "   @   │  \n"
+    "  🯑│🯒  │  \n"
+    "  🯑 🯒  │  \n"
+    "       │  \n"
+    " ══════╧══\n"
+};
 
 #endif // GAME_H

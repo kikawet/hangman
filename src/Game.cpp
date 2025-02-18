@@ -2,8 +2,10 @@
 #include "Game.h"
 #include <fstream>
 #include <algorithm>
+#include <iostream>
 
-Game::Game(const std::vector<std::string> &lexicon) : total_guess(0),
+Game::Game(const std::vector<std::string> &lexicon) : failed_count(0),
+                                                      success_count(0),
                                                       alphabet(ALPHABET),
                                                       solution(),
                                                       rand()
@@ -33,10 +35,16 @@ Game::~Game()
 
 bool Game::guess(char c)
 {
+    if (success_count == solution.size())
+        return true;
+
     bool valid = false;
     for (std::size_t i = 0; i < alphabet.size(); i++)
         if (alphabet[i] == c)
         {
+            if (alphabet_guessed[i])
+                return false;
+
             alphabet_guessed[i] = true;
             valid = true;
         }
@@ -44,17 +52,28 @@ bool Game::guess(char c)
     if (!valid)
         throw std::runtime_error("Invalid character " + std::string(1, c));
 
-    total_guess++;
+    bool in_solution = false;
     for (std::size_t i = 0; i < solution.size(); i++)
+    {
         if (solution[i] == c)
-            return true;
+        {
+            success_count++;
+            in_solution = true;
+        }
+    }
+
+    if (in_solution && success_count == solution.size())
+        return true;
+
+    if (!in_solution)
+        failed_count++;
 
     return false;
 }
 
-int Game::get_total_guess()
+std::size_t Game::get_failed_count()
 {
-    return total_guess;
+    return failed_count;
 }
 
 std::vector<char> Game::guesses()
@@ -97,6 +116,11 @@ std::string Game::guessed(char unkown)
     }
 
     return hidden;
+}
+
+std::string_view Game::give_up()
+{
+    return solution;
 }
 
 bool validate_word(const std::string &word, const std::string &alphabet, std::size_t *err_pos)
