@@ -16,7 +16,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wredundant-decls
 include_directories(HANGMAN src)
 
 # HANGMAN
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_executable(hangman main.cpp ${SOURCES})
 
 

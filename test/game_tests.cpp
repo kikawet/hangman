@@ -1,15 +1,13 @@
 
 #include <vector>
-#include "ctest.h"
+#include "test_common.h"
 #include "Game.h"
 
-#define C_STR(char) std::string(1, (char)).c_str()
-
-std::vector<std::string> lexicon{"WORD", "HOME", "ATOM"};
+std::vector<std::string> game_lexicon{"WORD", "HOME", "ATOM"};
 
 CTEST(Game, constructor)
 {
-    Game g(lexicon);
+    Game g(game_lexicon);
 
     ASSERT_EQUAL(0, g.get_failed_count());
     ASSERT_TRUE(g.guesses().empty());
@@ -17,7 +15,7 @@ CTEST(Game, constructor)
 
 CTEST(Game, no_char)
 {
-    Game g(lexicon);
+    Game g(game_lexicon);
 
     try
     {
@@ -34,12 +32,13 @@ CTEST(Game, no_char)
 
 CTEST(Game, guess)
 {
-    Game g(lexicon);
+    std::vector test_dict{game_lexicon[0]};
+    Game g(test_dict);
 
     g.guess(ALPHABET[0]);
 
     ASSERT_EQUAL(1, g.get_failed_count());
-    ASSERT_STR(C_STR(ALPHABET[0]), C_STR(g.guesses()[0]));
+    ASSERT_CHAR(ALPHABET[0], g.guesses()[0]);
 }
 
 CTEST(Game, guessed)
@@ -52,11 +51,11 @@ CTEST(Game, guessed)
 
     ASSERT_FALSE(g.guess(solution[0]));
 
-    ASSERT_STR(C_STR(solution[0]), C_STR(g.guessed()[0]));
+    ASSERT_CHAR(solution[0], g.guessed()[0]);
 
     for (std::size_t i = 1; i < solution.size(); i++)
     {
-        ASSERT_NOT_STR(C_STR(solution[i]), C_STR(g.guessed()[i]));
+        ASSERT_NOT_CHAR(solution[i], g.guessed()[i]);
     }
 }
 
