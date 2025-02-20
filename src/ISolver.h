@@ -8,7 +8,7 @@
 class ISolver
 {
 public:
-    virtual std::string solve(Game &game) = 0;
+    virtual std::u32string solve(Game &game) = 0;
 };
 
 #endif // SOLVER_H

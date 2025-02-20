@@ -7,7 +7,7 @@
 class NoSolver : public ISolver
 {
 public:
-    virtual std::string solve(Game &game);
+    virtual std::u32string solve(Game &game);
 };
 
 #endif // NO_SOLVER_H

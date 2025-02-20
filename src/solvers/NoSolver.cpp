@@ -1,6 +1,6 @@
 
 #include "NoSolver.h"
 
-std::string NoSolver::solve(Game& g) {
-    return std::string(g.give_up());
+std::u32string NoSolver::solve(Game& g) {
+    return g.give_up();
 }

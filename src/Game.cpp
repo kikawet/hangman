@@ -1,19 +1,21 @@
 
-#include "Game.h"
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <codecvt>
+#include <locale>
+#include "Game.h"
 
-Game::Game(const std::vector<std::string> &lexicon) : failed_count(0),
-                                                      success_count(0),
-                                                      alphabet(ALPHABET),
-                                                      solution(),
-                                                      rand()
+Game::Game(const std::vector<std::u32string> &lexicon) : failed_count(0),
+                                                         success_count(0),
+                                                         alphabet(ALPHABET),
+                                                         solution(),
+                                                         rand()
 {
     if (lexicon.empty())
         throw std::runtime_error("Unable to initialize Game with empty lexicon");
 
-    for (const std::string &word : lexicon)
+    for (const std::u32string &word : lexicon)
         if (!validate_word(word, alphabet, nullptr))
             throw std::runtime_error("Invalid lexicon does not match alphabet");
 
@@ -33,7 +35,13 @@ Game::~Game()
     }
 }
 
-bool Game::guess(char c)
+void throw_u32string(std::u32string msg)
+{
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+    throw std::runtime_error(converter.to_bytes(msg));
+}
+
+bool Game::guess(char32_t c)
 {
     if (success_count == solution.size())
         return true;
@@ -50,7 +58,7 @@ bool Game::guess(char c)
         }
 
     if (!valid)
-        throw std::runtime_error("Invalid character " + std::string(1, c));
+        throw_u32string(U"Invalid character " + std::u32string(1, c));
 
     bool in_solution = false;
     for (std::size_t i = 0; i < solution.size(); i++)
@@ -76,9 +84,9 @@ std::size_t Game::get_failed_count()
     return failed_count;
 }
 
-std::vector<char> Game::guesses()
+std::vector<char32_t> Game::guesses()
 {
-    std::vector<char> checked;
+    std::vector<char32_t> checked;
     checked.reserve(alphabet.size());
 
     for (std::size_t i = 0; i < alphabet.size(); i++)
@@ -88,13 +96,13 @@ std::vector<char> Game::guesses()
     return checked;
 }
 
-std::string Game::guessed(char unkown)
+std::u32string Game::guessed(char32_t unkown)
 {
     for (std::size_t i = 0; i < alphabet.size(); i++)
         if (alphabet[i] == unkown)
-            throw std::runtime_error("Unable to generate guessed if '" + std::string(1, unkown) + "' is in the alphabet");
+            throw_u32string(U"Unable to generate guessed because '" + std::u32string(1, unkown) + U"' is in the alphabet");
 
-    std::string hidden(solution);
+    std::u32string hidden(solution);
 
     for (std::size_t i = 0; i < solution.size(); i++)
     {
@@ -118,12 +126,12 @@ std::string Game::guessed(char unkown)
     return hidden;
 }
 
-std::string_view Game::give_up()
+std::u32string Game::give_up()
 {
     return solution;
 }
 
-bool validate_word(const std::string &word, const std::string &alphabet, std::size_t *err_pos)
+bool validate_word(const std::u32string &word, const std::u32string &alphabet, std::size_t *err_pos)
 {
     for (std::size_t i = 0; i < word.size(); i++)
     {
@@ -146,20 +154,21 @@ bool validate_word(const std::string &word, const std::string &alphabet, std::si
     return true;
 }
 
-std::vector<std::string> loadLexicon(std::string lexiconPath)
+std::vector<std::u32string> loadLexicon(std::string lexiconPath)
 {
     std::ifstream file(lexiconPath);
-    std::vector<std::string> lexicon;
+    std::vector<std::u32string> lexicon;
 
     if (!file.is_open())
         throw std::runtime_error("Error opening file: " + lexiconPath);
 
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
     std::string word;
 
     while (!file.eof())
     {
         file >> word;
-        lexicon.emplace_back(word);
+        lexicon.emplace_back(converter.from_bytes(word));
     }
 
     return lexicon;
